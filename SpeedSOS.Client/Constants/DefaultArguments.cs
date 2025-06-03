@@ -9,6 +9,7 @@ namespace SpeedSOS.Client.Constants
         public const string ConfirmNo = "Ні";
         public const string ActionSheetCancel = "Нічого";
         public const string ActionSheetDefaultMessage = "Що ви бажаєте зробити?";
+        public const string ActionSheetDestruction = null;
         public const double ToastTextSize = 20;
         public const ToastDuration DefaultToastDuration = ToastDuration.Long;
     }

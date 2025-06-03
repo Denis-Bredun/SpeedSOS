@@ -18,6 +18,7 @@ namespace SpeedSOS.Client.Interfaces
         Task<string> ShowActionSheetAsync(
             string title = DefaultArguments.ActionSheetDefaultMessage,
             string cancel = DefaultArguments.ActionSheetCancel,
+            string destruction = DefaultArguments.ActionSheetDestruction,
             params string[] options);
     }
 }
