@@ -29,6 +29,12 @@ namespace SpeedSOS.Client.Decorators
                 _logger.LogError(ex, "Failed to get current page from inner resolver.");
                 throw;
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while getting the current page.");
+                throw;
+            }
+
             return page;
         }
     }
