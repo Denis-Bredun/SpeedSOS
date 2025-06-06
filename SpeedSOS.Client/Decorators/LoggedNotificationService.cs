@@ -29,12 +29,24 @@ namespace SpeedSOS.Client.Decorators
             }
             catch (ArgumentException ex)
             {
-                logger.LogError(ex, LogMessages.NotificationDialogInvalidArgument, message);
+                logger.LogError(
+                    ex,
+                    LogMessages.NotificationDialogInvalidArgument,
+                    message,
+                    title,
+                    yesText,
+                    noText);
                 throw;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, LogMessages.NotificationDialogUnexpected, message);
+                logger.LogError(
+                    ex,
+                    LogMessages.NotificationDialogUnexpected,
+                    message,
+                    title,
+                    yesText,
+                    noText);
                 throw;
             }
         }
@@ -51,12 +63,26 @@ namespace SpeedSOS.Client.Decorators
             }
             catch (ArgumentException ex)
             {
-                logger.LogError(ex, LogMessages.NotificationActionSheetInvalidArgument, title, options?.Length ?? 0);
+                logger.LogError(
+                    ex,
+                    LogMessages.NotificationActionSheetInvalidArgument,
+                    title,
+                    cancel,
+                    destruction,
+                    options?.Length ?? 0,
+                    string.Join(", ", options ?? Array.Empty<string>()));
                 throw;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, LogMessages.NotificationActionSheetUnexpected, title);
+                logger.LogError(
+                    ex,
+                    LogMessages.NotificationActionSheetUnexpected,
+                    title,
+                    cancel,
+                    destruction,
+                    options?.Length ?? 0,
+                    string.Join(", ", options ?? Array.Empty<string>()));
                 throw;
             }
         }

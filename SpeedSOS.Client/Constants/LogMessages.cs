@@ -9,10 +9,16 @@
         public const string PageResolverFailed = "Failed to get current page from inner resolver.";
         public const string PageResolverUnexpected = "An unexpected error occurred while getting the current page.";
 
-        public const string NotificationDialogInvalidArgument = "Invalid argument for ShowYesNoDialogAsync: {Message}";
-        public const string NotificationDialogUnexpected = "Unexpected error in ShowYesNoDialogAsync with message: {Message}";
+        public const string NotificationDialogInvalidArgument =
+        "Invalid argument provided for Yes/No dialog: message='{Message}', title='{Title}', yes='{Yes}', no='{No}'";
 
-        public const string NotificationActionSheetInvalidArgument = "Invalid argument for ShowActionSheetAsync: title: {Title}, options count: {OptionsCount}";
-        public const string NotificationActionSheetUnexpected = "Unexpected error in ShowActionSheetAsync with title: {Title}";
+        public const string NotificationDialogUnexpected =
+            "An unexpected error occurred while showing Yes/No dialog: message='{Message}', title='{Title}', yes='{Yes}', no='{No}'";
+
+        public const string NotificationActionSheetInvalidArgument =
+            "Invalid argument provided for ActionSheet: title='{Title}', cancel='{Cancel}', destruction='{Destruction}', optionsCount={OptionsCount}, options=[{Options}]";
+
+        public const string NotificationActionSheetUnexpected =
+            "An unexpected error occurred while showing ActionSheet: title='{Title}', cancel='{Cancel}', destruction='{Destruction}', optionsCount={OptionsCount}, options=[{Options}]";
     }
 }
