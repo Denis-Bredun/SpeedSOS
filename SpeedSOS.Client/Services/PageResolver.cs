@@ -1,4 +1,5 @@
-﻿using SpeedSOS.Client.Interfaces;
+﻿using SpeedSOS.Client.Constants;
+using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Services
 {
@@ -7,10 +8,10 @@ namespace SpeedSOS.Client.Services
         public Page GetCurrentPage()
         {
             if (Application.Current is null)
-                throw new InvalidOperationException("Application.Current is null. Ensure the application is initialized.");
+                throw new InvalidOperationException(ExceptionMessages.AppNull);
 
             if (Application.Current.MainPage is null)
-                throw new InvalidOperationException("Application.Current.MainPage is null. Ensure the main page is set.");
+                throw new InvalidOperationException(ExceptionMessages.MainPageNull);
 
             return Application.Current.MainPage;
         }

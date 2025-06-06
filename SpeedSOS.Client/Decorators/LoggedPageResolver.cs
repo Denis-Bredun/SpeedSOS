@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SpeedSOS.Client.Constants;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Decorators
@@ -26,12 +27,12 @@ namespace SpeedSOS.Client.Decorators
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Failed to get current page from inner resolver.");
+                _logger.LogError(ex, LogMessages.PageResolverFailed);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while getting the current page.");
+                _logger.LogError(ex, LogMessages.PageResolverUnexpected);
                 throw;
             }
 

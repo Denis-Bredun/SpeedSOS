@@ -13,10 +13,10 @@ namespace SpeedSOS.Client.Services
             ToastDuration duration = DefaultArguments.DefaultToastDuration)
         {
             if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentException("Message cannot be null or empty.", nameof(message));
+                throw new ArgumentException(ExceptionMessages.ToastMessageNullOrEmpty, nameof(message));
 
             if (textSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(textSize), "Text size must be greater than zero.");
+                throw new ArgumentOutOfRangeException(nameof(textSize), ExceptionMessages.ToastTextSizeInvalid);
 
             await Toast.Make(message, duration, textSize).Show();
         }

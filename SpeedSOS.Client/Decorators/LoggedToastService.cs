@@ -29,17 +29,17 @@ namespace SpeedSOS.Client.Decorators
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                _logger.LogError(ex, "Argument out of range for ShowToast: duration: {Duration}", duration);
+                _logger.LogError(ex, LogMessages.ToastOutOfRange, textSize);
                 throw;
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError(ex, "Invalid argument provided for ShowToast: message: {Message}", message);
+                _logger.LogError(ex, LogMessages.ToastInvalidArgument, message);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred while showing toast: {Message}", message);
+                _logger.LogError(ex, LogMessages.ToastUnexpected, message);
                 throw;
             }
         }
