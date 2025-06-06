@@ -5,19 +5,10 @@ using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Decorators
 {
-    public class LoggedToastService : IToastService
+    public class LoggedToastService(
+        IToastService innerToastService,
+        ILogger<LoggedToastService> logger) : IToastService
     {
-        private readonly IToastService _innerToastService;
-        private readonly ILogger<LoggedToastService> _logger;
-
-        public LoggedToastService(
-            IToastService innerToastService,
-            ILogger<LoggedToastService> logger)
-        {
-            _innerToastService = innerToastService;
-            _logger = logger;
-        }
-
         public async Task ShowToast(
             string message,
             double textSize = DefaultArguments.ToastTextSize,
@@ -25,21 +16,21 @@ namespace SpeedSOS.Client.Decorators
         {
             try
             {
-                await _innerToastService.ShowToast(message, textSize, duration);
+                await innerToastService.ShowToast(message, textSize, duration);
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                _logger.LogError(ex, LogMessages.ToastOutOfRange, textSize);
+                logger.LogError(ex, LogMessages.ToastOutOfRange, textSize);
                 throw;
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError(ex, LogMessages.ToastInvalidArgument, message);
+                logger.LogError(ex, LogMessages.ToastInvalidArgument, message);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, LogMessages.ToastUnexpected, message);
+                logger.LogError(ex, LogMessages.ToastUnexpected, message);
                 throw;
             }
         }
