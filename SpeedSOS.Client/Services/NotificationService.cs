@@ -1,28 +1,41 @@
-﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
+﻿using CommunityToolkit.Maui.Core;
 using SpeedSOS.Client.Constants;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Services
 {
-    public class NotificationService : INotificationService
+    public class NotificationService(
+        IPageResolver pageResolver,
+        IToastService toastService) : INotificationService
     {
         public async Task ShowToastAsync(
             string message,
             double textSize = DefaultArguments.ToastTextSize,
             ToastDuration duration = DefaultArguments.DefaultToastDuration)
         {
-            var notification = Toast.Make(message, duration, textSize);
-            await notification.Show();
+            await toastService.ShowToast(message, textSize, duration);
         }
 
         public async Task<bool> ShowYesNoDialogAsync(
-            string message,
-            string title = DefaultArguments.ConfirmDialogTitle,
-            string yesText = DefaultArguments.ConfirmYes,
-            string noText = DefaultArguments.ConfirmNo)
+        string message,
+        string title = DefaultArguments.ConfirmDialogTitle,
+        string yesText = DefaultArguments.ConfirmYes,
+        string noText = DefaultArguments.ConfirmNo)
         {
-            return await GetCurrentPage().DisplayAlert(title, message, yesText, noText);
+            if (string.IsNullOrWhiteSpace(message))
+                throw new ArgumentException(ExceptionMessages.DialogMessageNullOrEmpty, nameof(message));
+
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException(ExceptionMessages.DialogTitleNullOrEmpty, nameof(title));
+
+            if (string.IsNullOrWhiteSpace(yesText))
+                throw new ArgumentException(ExceptionMessages.DialogYesTextNullOrEmpty, nameof(yesText));
+
+            if (string.IsNullOrWhiteSpace(noText))
+                throw new ArgumentException(ExceptionMessages.DialogNoTextNullOrEmpty, nameof(noText));
+
+            var currentPage = pageResolver.GetCurrentPage();
+            return await currentPage.DisplayAlert(title, message, yesText, noText);
         }
 
         public async Task<string> ShowActionSheetAsync(
@@ -31,18 +44,17 @@ namespace SpeedSOS.Client.Services
             string destruction = DefaultArguments.ActionSheetDestruction,
             params string[] options)
         {
-            return await GetCurrentPage().DisplayActionSheet(title, cancel, destruction, options);
-        }
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException(ExceptionMessages.ActionSheetTitleNullOrEmpty, nameof(title));
 
-        private Page GetCurrentPage()
-        {
-            if (Application.Current is null)
-                throw new InvalidOperationException("Application.Current is null. Ensure the application is initialized.");
+            if (string.IsNullOrWhiteSpace(cancel))
+                throw new ArgumentException(ExceptionMessages.ActionSheetCancelNullOrEmpty, nameof(cancel));
 
-            if (Application.Current.MainPage is null)
-                throw new InvalidOperationException("Application.Current.MainPage is null. Ensure the main page is set.");
+            if (options == null || options.Length == 0)
+                throw new ArgumentException(ExceptionMessages.ActionSheetOptionsNullOrEmpty, nameof(options));
 
-            return Application.Current.MainPage;
+            var currentPage = pageResolver.GetCurrentPage();
+            return await currentPage.DisplayActionSheet(title, cancel, destruction, options);
         }
     }
 }
