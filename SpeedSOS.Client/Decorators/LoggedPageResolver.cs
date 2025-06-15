@@ -1,24 +1,23 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using SpeedSOS.Client.Constants;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Decorators
 {
     public class LoggedPageResolver(
-        IPageResolver innerPageResolver,
-        ILogger<LoggedPageResolver> logger) : IPageResolver
+    IPageResolver innerPageResolver,
+    ILogger<LoggedPageResolver> logger) : IPageResolver
     {
         public Page GetCurrentPage()
         {
-            Page page;
-
             try
             {
-                page = innerPageResolver.GetCurrentPage();
+                return innerPageResolver.GetCurrentPage();
             }
-            catch (InvalidOperationException ex)
+            catch (ValidationException ex)
             {
-                logger.LogError(ex, LogMessages.PageResolverFailed);
+                logger.LogError(ex, LogMessages.FormatPageResolverValidationErrorMessage(ex));
                 throw;
             }
             catch (Exception ex)
@@ -26,8 +25,6 @@ namespace SpeedSOS.Client.Decorators
                 logger.LogError(ex, LogMessages.PageResolverUnexpected);
                 throw;
             }
-
-            return page;
         }
     }
 }

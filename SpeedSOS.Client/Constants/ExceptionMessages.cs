@@ -15,6 +15,7 @@
 
         public const string ActionSheetTitleNullOrEmpty = "Action sheet title cannot be null or empty.";
         public const string ActionSheetCancelNullOrEmpty = "Action sheet cancel text cannot be null or empty.";
+        public const string ActionSheetDestructionNullOrEmpty = "Action sheet destruction text cannot be null or empty.";
         public const string ActionSheetOptionsNullOrEmpty = "At least one option must be provided for the action sheet.";
     }
 }

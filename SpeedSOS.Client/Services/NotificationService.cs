@@ -1,19 +1,30 @@
 ﻿using CommunityToolkit.Maui.Core;
+using FluentValidation;
 using SpeedSOS.Client.Constants;
+using SpeedSOS.Client.DTOs.Validation;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Services
 {
     public class NotificationService(
         IPageResolver pageResolver,
-        IToastService toastService) : INotificationService
+        IToastService toastService,
+        IValidator<YesNoDialogRequest> yesNoValidator,
+        IValidator<ActionSheetRequest> actionSheetValidator) : INotificationService
     {
         public async Task ShowToastAsync(
             string message,
             double textSize = DefaultArguments.ToastTextSize,
             ToastDuration duration = DefaultArguments.DefaultToastDuration)
         {
-            await toastService.ShowToast(message, textSize, duration);
+            var request = new ToastRequest
+            {
+                Message = message,
+                TextSize = textSize,
+                Duration = duration
+            };
+
+            await toastService.ShowToastAsync(request);
         }
 
         public async Task<bool> ShowYesNoDialogAsync(
@@ -22,36 +33,35 @@ namespace SpeedSOS.Client.Services
         string yesText = DefaultArguments.ConfirmYes,
         string noText = DefaultArguments.ConfirmNo)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentException(ExceptionMessages.DialogMessageNullOrEmpty, nameof(message));
+            var request = new YesNoDialogRequest
+            {
+                Message = message,
+                Title = title,
+                YesText = yesText,
+                NoText = noText
+            };
 
-            if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentException(ExceptionMessages.DialogTitleNullOrEmpty, nameof(title));
-
-            if (string.IsNullOrWhiteSpace(yesText))
-                throw new ArgumentException(ExceptionMessages.DialogYesTextNullOrEmpty, nameof(yesText));
-
-            if (string.IsNullOrWhiteSpace(noText))
-                throw new ArgumentException(ExceptionMessages.DialogNoTextNullOrEmpty, nameof(noText));
+            await yesNoValidator.ValidateAndThrowAsync(request);
 
             var currentPage = pageResolver.GetCurrentPage();
             return await currentPage.DisplayAlert(title, message, yesText, noText);
         }
 
         public async Task<string> ShowActionSheetAsync(
-            string title = DefaultArguments.ActionSheetDefaultMessage,
-            string cancel = DefaultArguments.ActionSheetCancel,
-            string destruction = DefaultArguments.ActionSheetDestruction,
-            params string[] options)
+        string title = DefaultArguments.ActionSheetDefaultMessage,
+        string cancel = DefaultArguments.ActionSheetCancel,
+        string destruction = DefaultArguments.ActionSheetDestruction,
+        params string[] options)
         {
-            if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentException(ExceptionMessages.ActionSheetTitleNullOrEmpty, nameof(title));
+            var request = new ActionSheetRequest
+            {
+                Title = title,
+                Cancel = cancel,
+                Destruction = destruction,
+                Options = options
+            };
 
-            if (string.IsNullOrWhiteSpace(cancel))
-                throw new ArgumentException(ExceptionMessages.ActionSheetCancelNullOrEmpty, nameof(cancel));
-
-            if (options == null || options.Length == 0)
-                throw new ArgumentException(ExceptionMessages.ActionSheetOptionsNullOrEmpty, nameof(options));
+            await actionSheetValidator.ValidateAndThrowAsync(request);
 
             var currentPage = pageResolver.GetCurrentPage();
             return await currentPage.DisplayActionSheet(title, cancel, destruction, options);

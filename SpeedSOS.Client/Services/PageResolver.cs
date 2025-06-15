@@ -1,19 +1,29 @@
-﻿using SpeedSOS.Client.Constants;
+﻿using FluentValidation;
 using SpeedSOS.Client.Interfaces;
+using SpeedSOS.Client.ValueObject;
 
 namespace SpeedSOS.Client.Services
 {
     public class PageResolver : IPageResolver
     {
+        private readonly IValidator<AppState> _validator;
+
+        public PageResolver(IValidator<AppState> validator)
+        {
+            _validator = validator;
+        }
+
         public Page GetCurrentPage()
         {
-            if (Application.Current is null)
-                throw new InvalidOperationException(ExceptionMessages.AppNull);
+            var appState = new AppState
+            {
+                Current = Application.Current,
+                MainPage = Application.Current?.MainPage
+            };
 
-            if (Application.Current.MainPage is null)
-                throw new InvalidOperationException(ExceptionMessages.MainPageNull);
+            _validator.ValidateAndThrow(appState);
 
-            return Application.Current.MainPage;
+            return appState.MainPage!;
         }
     }
 }

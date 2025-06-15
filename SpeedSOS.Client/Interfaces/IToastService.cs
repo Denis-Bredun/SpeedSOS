@@ -1,13 +1,9 @@
-﻿using CommunityToolkit.Maui.Core;
-using SpeedSOS.Client.Constants;
+﻿using SpeedSOS.Client.DTOs.Validation;
 
 namespace SpeedSOS.Client.Interfaces
 {
     public interface IToastService
     {
-        Task ShowToast(
-            string message,
-            double textSize = DefaultArguments.ToastTextSize,
-            ToastDuration duration = DefaultArguments.DefaultToastDuration);
+        Task ShowToastAsync(ToastRequest request);
     }
 }

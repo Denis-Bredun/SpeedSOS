@@ -1,24 +1,23 @@
 ﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
-using SpeedSOS.Client.Constants;
+using FluentValidation;
+using SpeedSOS.Client.DTOs.Validation;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Services
 {
     public class ToastService : IToastService
     {
-        public async Task ShowToast(
-            string message,
-            double textSize = DefaultArguments.ToastTextSize,
-            ToastDuration duration = DefaultArguments.DefaultToastDuration)
+        private readonly IValidator<ToastRequest> _validator;
+
+        public ToastService(IValidator<ToastRequest> validator)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                throw new ArgumentException(ExceptionMessages.ToastMessageNullOrEmpty, nameof(message));
+            _validator = validator;
+        }
 
-            if (textSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(textSize), ExceptionMessages.ToastTextSizeInvalid);
-
-            await Toast.Make(message, duration, textSize).Show();
+        public async Task ShowToastAsync(ToastRequest request)
+        {
+            await _validator.ValidateAndThrowAsync(request);
+            await Toast.Make(request.Message, request.Duration, request.TextSize).Show();
         }
     }
 }

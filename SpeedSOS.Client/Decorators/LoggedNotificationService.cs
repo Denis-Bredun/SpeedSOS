@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SpeedSOS.Client.Constants;
 using SpeedSOS.Client.Interfaces;
@@ -27,15 +28,11 @@ namespace SpeedSOS.Client.Decorators
             {
                 return await innerNotificationService.ShowYesNoDialogAsync(message, title, yesText, noText);
             }
-            catch (ArgumentException ex)
+            catch (ValidationException ex)
             {
                 logger.LogError(
                     ex,
-                    LogMessages.NotificationDialogInvalidArgument,
-                    message,
-                    title,
-                    yesText,
-                    noText);
+                    LogMessages.FormatYesNoDialogValidationErrorMessage(ex, message, title, yesText, noText));
                 throw;
             }
             catch (Exception ex)
@@ -61,16 +58,11 @@ namespace SpeedSOS.Client.Decorators
             {
                 return await innerNotificationService.ShowActionSheetAsync(title, cancel, destruction, options);
             }
-            catch (ArgumentException ex)
+            catch (ValidationException ex)
             {
                 logger.LogError(
                     ex,
-                    LogMessages.NotificationActionSheetInvalidArgument,
-                    title,
-                    cancel,
-                    destruction,
-                    options?.Length ?? 0,
-                    string.Join(", ", options ?? Array.Empty<string>()));
+                    LogMessages.FormatActionSheetValidationErrorMessage(ex, title, cancel, destruction, options));
                 throw;
             }
             catch (Exception ex)
@@ -87,5 +79,4 @@ namespace SpeedSOS.Client.Decorators
             }
         }
     }
-
 }

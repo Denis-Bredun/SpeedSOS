@@ -1,6 +1,7 @@
-﻿using CommunityToolkit.Maui.Core;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SpeedSOS.Client.Constants;
+using SpeedSOS.Client.DTOs.Validation;
 using SpeedSOS.Client.Interfaces;
 
 namespace SpeedSOS.Client.Decorators
@@ -9,28 +10,20 @@ namespace SpeedSOS.Client.Decorators
         IToastService innerToastService,
         ILogger<LoggedToastService> logger) : IToastService
     {
-        public async Task ShowToast(
-            string message,
-            double textSize = DefaultArguments.ToastTextSize,
-            ToastDuration duration = DefaultArguments.DefaultToastDuration)
+        public async Task ShowToastAsync(ToastRequest request)
         {
             try
             {
-                await innerToastService.ShowToast(message, textSize, duration);
+                await innerToastService.ShowToastAsync(request);
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ValidationException ex)
             {
-                logger.LogError(ex, LogMessages.ToastOutOfRange, textSize);
-                throw;
-            }
-            catch (ArgumentException ex)
-            {
-                logger.LogError(ex, LogMessages.ToastInvalidArgument, message);
+                logger.LogError(ex, LogMessages.FormatToastValidationErrorMessage(ex));
                 throw;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, LogMessages.ToastUnexpected, message);
+                logger.LogError(ex, LogMessages.ToastUnexpected, request.Message);
                 throw;
             }
         }
